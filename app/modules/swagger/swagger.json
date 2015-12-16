@@ -6,43 +6,162 @@
         
     },
     "swagger":"2.0",
+    "basePath": "/api",
+    "tags":[{
+       "name": "events",
+       "description": "Access to the events"
+    }],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
     "paths":{
-        "/login":{
-            "post":{
-                "description":"Login to the application",
+        "/events":{
+            "get":{
+                "tags": ["events"],
+                "summary": "Retrieve events",
+                "description":"Retrieves all events",
                 "produces":["application/json"],
                 "parameters":[
                     {
-                        "name":"username",
-                        "description":"Username to use for login.",
-                        "in":"formData",
-                        "required":true,
-                        "type":"string"
-                        
-                    },
-                    {
-                        "name":"password",
-                        "description":"User's password.",
-                        "in":"formData",
-                        "required":true,
-                        "type":"string"
-                        
+                        "name": "limit",
+                        "in": "query",
+                        "description": "maximum number of results to return",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
                     }
                 ],
                 "responses":{
                     "200":{
-                        "description":"login"
-                        
+                        "description":"Returns the events found",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Event"
+                            }
+                        }
                     }
-                    
                 }
-                
+            },
+            "put":{
+                "tags": ["events"],
+                "summary": "Creates an event",
+                "description":"Creates a new event with the properties in the body of the request",
+                "produces":["application/json"],
+                "consumes":["application/json"],
+                "parameters":[
+                    {
+                        "name": "event",
+                        "in": "body",
+                        "description": "The properties of the event",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Returns the event that was deleted",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                }
             }
-            
+        },
+        "/events/{id}":{
+            "get":{
+                "tags": ["events"],
+                "summary": "Retrieve an event",
+                "description":"Retrieves a specific event identified with the path id parameter",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id of the single event to return",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Returns the event",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags": ["events"],
+                "summary": "Delete an event",
+                "description":"Deletes a specific event identified with the path id parameter",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id of the single event to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Returns the event that was deleted",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                }
+            }
         }
-        
     },
-    "definitions":{},
-    "schemes": ["http"]
-    
+    "definitions":{
+        "Event": {
+            "type": "object",
+            "required": ["title", "start", "end"],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the event"
+                },
+                "start": {
+					"type": "string",
+					"format": "date-time",
+					"description": "The date and time the event starts"
+				},
+                "end": {
+					"type": "string",
+					"format": "date-time",
+					"description": "The date and time the event ends"
+				},
+				"contact": {
+				    "$ref": "#/definitions/Contact"
+				}
+            }
+        },
+        "Contact": {
+            "type": "object",
+            "required": ["email"],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        }
+    }
 }
