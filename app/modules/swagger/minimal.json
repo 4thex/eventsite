@@ -1,0 +1,105 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "Minimal",
+		"version": "0.0.1"
+	},
+	"basePath": "/api",
+    "tags":[{
+       "name": "events",
+       "description": "Access to the events"
+    }],
+	"paths": {
+	    "/events": {
+	        "get": {
+	            "tags": ["events"],
+                "parameters":[
+                    {
+                        "name": "$line",
+                        "in": "query",
+                        "description": "Maximum number of results to return",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+	            "responses": {
+                  "200":{
+                    "description":"Returns the events found",
+                    "schema": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Event"
+                      }
+                    }
+                  }
+                }
+	        }
+	    },
+        "/events/{id}":{
+            "get":{
+                "tags": ["events"],
+                "summary": "Retrieve an event",
+                "description":"Retrieves a specific event identified with the path id parameter",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id of the single event to return",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Returns the event",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                }
+            }
+        }
+	    
+	},
+    "definitions":{
+        "Event": {
+            "type": "object",
+            "required": ["title", "start", "end"],
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the event"
+                },
+                "start": {
+					"type": "string",
+					"format": "date-time",
+					"description": "The date and time the event starts"
+				},
+                "end": {
+					"type": "string",
+					"format": "date-time",
+					"description": "The date and time the event ends"
+				},
+				"contact": {
+				    "$ref": "#/definitions/Contact"
+				}
+            }
+        },
+        "Contact": {
+            "type": "object",
+            "required": ["email"],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        }
+    }
+}
